@@ -18,7 +18,7 @@ void setup() {
   Serial.println("Starting init...");
   fsh.init();
   Serial.println("Starting testing...");
-
+  randomSeed(analogRead(0));
   p1 = new PanelHandler(2);
 }
 
@@ -46,23 +46,40 @@ void loop() {
 
 void test()
 {
+
+  uint8_t red =  random(100);
+  uint8_t green =  random(30);
+  uint8_t blue =  random(50);
+  for(uint8_t r = 1; r < 14; r++) {
+    p1->DrawCircle(8,8,r,RgbPixel{red, green, blue});
+    p1->Show();
+    delay(80);
+    p1->DrawCircle(8,8,r,RgbPixel{0,0,0});
+  }
+
+  /*
   for(uint8_t x = 0; x < 16; x++) {
     p1->DrawLine(0, 0, x, 15,RgbPixel{20, 10, 0});
     p1->DrawLine(15, 0, 0, x,RgbPixel{0, 10, 20});
+    p1->DrawLine(5, 5 + x/3, 10, 5 + x/3,RgbPixel{0, 10, 0});
     p1->Show();
     delay(100);
     p1->DrawLine(0,0,x,15,RgbPixel{0, 0, 0});
     p1->DrawLine(15, 0, 0, x,RgbPixel{0, 00, 0});
+    p1->DrawLine(5, 5 + x/3, 10, 5 + x/3,RgbPixel{0, 0, 0});
   }
 
   for(int8_t y = 15; y>= 0; y--) {
     p1->DrawLine(0,0,15,y,RgbPixel{20, 10, 0});
     p1->DrawLine(15, 0, 15-y, 15,RgbPixel{0, 10, 20});
+    p1->DrawLine(5, 5 - y/3, 10, 5 - y/3,RgbPixel{0, 10, 0});
     p1->Show();
     delay(100);
     p1->DrawLine(0,0,15,y,RgbPixel{0, 0, 0});
     p1->DrawLine(15, 0, 15-y, 15, RgbPixel{0, 0, 0});
+    p1->DrawLine(5, 5 - y/3, 10, 5 - y/3,RgbPixel{0, 10, 0});
   }
+  */
   /*
   uint16_t stripIdx = 0;
   for(uint8_t row = 0; row < PANEL_ROWS; row++) {

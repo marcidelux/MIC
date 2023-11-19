@@ -14,6 +14,9 @@ PanelHandler::~PanelHandler()
 
 void PanelHandler::SetPixelColor(uint8_t row, uint8_t col, RgbPixel pixel)
 {
+    if (row >= PANEL_ROWS || col >= PANEL_COLS) {
+        return;
+    }
     _image[row][col]->R = pixel.R;
     _image[row][col]->G = pixel.G;
     _image[row][col]->B = pixel.B;
@@ -32,6 +35,34 @@ void PanelHandler::DrawLine(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, RgbP
         e2 = 2 * err;
         if (e2 >= dy) { err += dy; x1 += sx; }
         if (e2 <= dx) { err += dx; y1 += sy; }
+    }
+}
+
+void PanelHandler::DrawCircle(uint8_t centerX, uint8_t centerY, uint8_t radius, RgbPixel color)
+{
+        int x = radius;
+    int y = 0;
+    int err = 0;
+
+    while (x >= y) {
+        // Draw each octant
+        SetPixelColor(centerX + x, centerY + y, color);
+        SetPixelColor(centerX + y, centerY + x, color);
+        SetPixelColor(centerX - y, centerY + x, color);
+        SetPixelColor(centerX - x, centerY + y, color);
+        SetPixelColor(centerX - x, centerY - y, color);
+        SetPixelColor(centerX - y, centerY - x, color);
+        SetPixelColor(centerX + y, centerY - x, color);
+        SetPixelColor(centerX + x, centerY - y, color);
+
+        if (err <= 0) {
+            y += 1;
+            err += 2*y + 1;
+        }
+        if (err > 0) {
+            x -= 1;
+            err -= 2*x + 1;
+        }
     }
 }
 
