@@ -1,33 +1,30 @@
 #include "fs_handler.hpp"
-#include "img_handler.hpp"
+#include "panel_handler.hpp"
 #include "cmd_handler.hpp"
 
 #include <NeoPixelBus.h>
 
 #include <Arduino.h>
 
-const uint16_t PixelCount = 256; // make sure to set this to the number of your LEDs.
-const uint8_t PixelPin = 2;  // make sure to set this to the correct pin, digital out, GPIO
-NeoPixelBus<NeoGrbFeature, NeoEsp32I2s1X8Ws2812xMethod> strip(PixelCount, PixelPin);
-const RgbColor CylonEyeColor(HtmlColor(0x7f0000));
-
 FsHandler fsh;
-ImgHandler imgh;
+PanelHandler *p1;
 
 void test();
 void handle_command(Command cmd);
 
 void setup() {
   Serial.begin(9600);
-  delay(4000);
+  delay(3000);
   Serial.println("Starting init...");
   fsh.init();
   Serial.println("Starting testing...");
-  strip.Begin();
-  //test();
+
+  p1 = new PanelHandler(2);
 }
 
 void loop() {
+  test();
+  /*
   // Call readCommand and store the result in a tuple
   std::tuple<Command, uint8_t> result = readCommand();
 
@@ -44,10 +41,48 @@ void loop() {
 
     clearCmd(&cmd);
   }
+  */
 }
 
 void test()
 {
+  for(uint8_t x = 0; x < 16; x++) {
+    p1->DrawLine(0, 0, x, 15,RgbPixel{20, 10, 0});
+    p1->DrawLine(15, 0, 0, x,RgbPixel{0, 10, 20});
+    p1->Show();
+    delay(100);
+    p1->DrawLine(0,0,x,15,RgbPixel{0, 0, 0});
+    p1->DrawLine(15, 0, 0, x,RgbPixel{0, 00, 0});
+  }
+
+  for(int8_t y = 15; y>= 0; y--) {
+    p1->DrawLine(0,0,15,y,RgbPixel{20, 10, 0});
+    p1->DrawLine(15, 0, 15-y, 15,RgbPixel{0, 10, 20});
+    p1->Show();
+    delay(100);
+    p1->DrawLine(0,0,15,y,RgbPixel{0, 0, 0});
+    p1->DrawLine(15, 0, 15-y, 15, RgbPixel{0, 0, 0});
+  }
+  /*
+  uint16_t stripIdx = 0;
+  for(uint8_t row = 0; row < PANEL_ROWS; row++) {
+    for (uint8_t col = 0; col < PANEL_COLS; col++) {
+      RgbPixel pixcol{0, 10, 0};
+      //Serial.printf("row: %d\tcol: %d\tR: %d\tG: %d\tB :%d\n", row, col, pixcol.R, pixcol.G, pixcol.B);
+      p1->SetPixelColor(row, col, pixcol);
+      //p1->_strip.SetPixelColor(stripIdx, RgbColor(0,0,10));
+      p1->Show();
+      delay(10);
+      p1->SetPixelColor(row, col, RgbPixel{0,0,0});
+      //p1->_strip.SetPixelColor(stripIdx, RgbColor(0,0,0));
+      stripIdx++;
+    }
+  }
+  */
+
+  Serial.println("finished");
+
+  /*
     Pixel* img_write = new Pixel[256]; 
 
     for (uint16_t i = 0; i < 256; i++) {
@@ -67,11 +102,11 @@ void test()
         Serial.printf("%d:\tR:%d\tG:%d\tB:%d\t\n", i, img_read[i].R, img_read[i].G, img_read[i].B);
         delay(10);
     }
-
-    imgh.showImg16(img_read);
+  */
 }
 
 void handle_command(Command cmd) {
+  /*
   switch (cmd.commandType)
   {
   case CMD_WRIE_IMAGE:
@@ -103,4 +138,5 @@ void handle_command(Command cmd) {
       break;
     }
   }
+  */
 }

@@ -17,6 +17,7 @@ uint8_t FsHandler::init()
    return 0;
 }
 
+/*
 Pixel *FsHandler::readImg16x16(const char *path)
 {
     Serial.printf("Reading file: %s\r\n", path);
@@ -68,3 +69,4 @@ uint8_t FsHandler::writeImg16X16(const char * path, const Pixel *img)
 
     return 0;
 }
+*/
