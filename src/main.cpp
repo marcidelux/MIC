@@ -1,13 +1,21 @@
 #include "fs_handler.hpp"
 #include "panel_handler.hpp"
 #include "cmd_handler.hpp"
+#include "msgeq7_handler.hpp"
 
 #include <NeoPixelBus.h>
 
 #include <Arduino.h>
 
+
+#define MSGEQ7_ANALOG_PIN 15
+#define MSGEQ7_STROBE_PIN 4
+#define MSGEQ7_RESET_PIN 16 
+
+
 FsHandler fsh;
 PanelHandler *p1;
+Msgeq7 *meh;
 
 void test();
 void handle_command(Command cmd);
@@ -20,11 +28,10 @@ void setup() {
   Serial.println("Starting testing...");
   randomSeed(analogRead(0));
   p1 = new PanelHandler(2);
+  meh = new Msgeq7(MSGEQ7_RESET_PIN, MSGEQ7_STROBE_PIN, MSGEQ7_ANALOG_PIN);
 }
 
 void loop() {
-  test();
-  /*
   // Call readCommand and store the result in a tuple
   std::tuple<Command, uint8_t> result = readCommand();
 
@@ -41,20 +48,26 @@ void loop() {
 
     clearCmd(&cmd);
   }
-  */
+ //test();
+  //delay(500);
+  //meh->test();
 }
 
 void test()
 {
+  RgbPixel red{50,0,0};
+  RgbPixel green{0,50,0};
+  RgbPixel blue{0,0,50};
+  RgbPixel black{0,0,0};
+  
+  RgbPixel rgb[3] = {red, green, blue};
+  String colors[3] = {"red", "green", "blue"};
 
-  uint8_t red =  random(100);
-  uint8_t green =  random(30);
-  uint8_t blue =  random(50);
-  for(uint8_t r = 1; r < 14; r++) {
-    p1->DrawCircle(8,8,r,RgbPixel{red, green, blue});
+  for (uint8_t i = 0; i < 3; i++) {
+    Serial.println(colors[i]);
+    p1->DrawCircle(8,8,5,rgb[i]);
     p1->Show();
-    delay(80);
-    p1->DrawCircle(8,8,r,RgbPixel{0,0,0});
+    delay(2000);
   }
 
   /*
@@ -123,37 +136,51 @@ void test()
 }
 
 void handle_command(Command cmd) {
-  /*
   switch (cmd.commandType)
   {
-  case CMD_WRIE_IMAGE:
-    {
-      Serial.printf("writing image: %s\n", cmd.parameter);
-      for (uint16_t i = 0; i < cmd.dataLength; i++) {
-        Serial.printf("i:%d\tb:%d", i, cmd.data[i]);
+    case CMD_WRIE_IMAGE:
+      {
+        Serial.printf("writing image: %s\n", cmd.parameter);
+        switch (fsh.WriteData((char*)cmd.parameter, cmd.data))
+        {
+          case 0:
+            Serial.println("image saved.");
+            break;
+          case 1:
+            Serial.println("failed to open file for writing");
+            break;
+          case 2:
+            Serial.println("failedd to write file");
+            break;
+        }
+        break;
       }
-      
-      Pixel *img_write = imgh.create16fromBytes(cmd.data);
-      fsh.writeImg16X16((char*)cmd.parameter, img_write);
-      delete[] img_write;
+    case CMD_SHOW_IMAGE:
+      {
+        Serial.printf("showing image: %s\n", cmd.parameter);
+        fsh.ReadData((char*)cmd.parameter);
+        p1->SetStripBuffer(fsh.GetBuffer16x16());
+        p1->Show();
+      }
+      break;
+    case CMD_DELETE_IMAGE:
+    {
+      switch(fsh.RemoveImage((char*)cmd.parameter))
+      {
+        case false:
+          Serial.println("Failed to remove image");
+          break;
+        case true:
+          Serial.println("Removed image succesfully");
+          break;
+      }
       break;
     }
-  case CMD_SHOW_IMAGE:
+    case CMD_READ_DIR:
     {
-      Serial.printf("showing image: %s\n", cmd.parameter);
-      Pixel* img_read = fsh.readImg16x16((char*)cmd.parameter); 
-      
-      for (uint16_t y = 0; y < 16; y++) {
-        for(uint16_t x = 0; x < 16; x++) {
-          uint16_t i = y * 16 + x;
-          Serial.printf("X: %d Y: %d, I: %d - R: %d, G: %d B: %d\n", x, y, i, img_read[i].R, img_read[i].G, img_read[i].B);
-        }
-      }
-      
-      imgh.showImg16(img_read);
-      delete[] img_read;
-      break;
+      Serial.printf("read dir:");
+      String dirs = fsh.ReadDirectory("/");
+      Serial.println(dirs);
     }
   }
-  */
 }

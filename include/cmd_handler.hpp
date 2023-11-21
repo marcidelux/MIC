@@ -6,7 +6,8 @@
 enum {
     CMD_WRIE_IMAGE = 0x01,
     CMD_SHOW_IMAGE = 0x02,
-    CMD_DELETE_IMAGE = 0x03
+    CMD_DELETE_IMAGE = 0x03,
+    CMD_READ_DIR = 0x04,
 };
 
 struct Command {

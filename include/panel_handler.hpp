@@ -24,6 +24,7 @@ class PanelHandler
         void DrawLine(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, RgbPixel color);
         void DrawCircle(uint8_t centerX, uint8_t centerY, uint8_t radius, RgbPixel color);
         RgbPixel* GetPixel(uint8_t row, u_int8_t col);
+        void SetStripBuffer(uint8_t *buff); // replace values of buff to _pixels.
         void Show();
         NeoPixelBus<NeoRgbFeature, NeoEsp32I2s1X8Ws2812xMethod> _strip;
     private:

@@ -17,8 +17,8 @@ void PanelHandler::SetPixelColor(uint8_t row, uint8_t col, RgbPixel pixel)
     if (row >= PANEL_ROWS || col >= PANEL_COLS) {
         return;
     }
-    _image[row][col]->R = pixel.R;
-    _image[row][col]->G = pixel.G;
+    _image[row][col]->R = pixel.G;
+    _image[row][col]->G = pixel.R;
     _image[row][col]->B = pixel.B;
 }
 
@@ -69,6 +69,11 @@ void PanelHandler::DrawCircle(uint8_t centerX, uint8_t centerY, uint8_t radius, 
 RgbPixel *PanelHandler::GetPixel(uint8_t row, u_int8_t col)
 {
     return _image[row][col];
+}
+
+void PanelHandler::SetStripBuffer(uint8_t *buff)
+{
+    memcpy(_pixels, buff, PANEL_PIXEL_COUNT * 3);
 }
 
 void PanelHandler::Show()

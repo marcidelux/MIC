@@ -11,19 +11,30 @@ baudrate = 9600
 
 """
 command_type = 0x01
-param_str = "/test.bin\0"
+param_str = "/test3.bin\0"
 parameter = bytearray(param_str, 'utf-8')
-file_path = "/home/napoleopard/Projects/Embedded/LedCube/pc_com/test.bin"  # Replace with your file path
+file_path = "/home/napoleopard/Projects/Embedded/LedCube/pc_com/test3.bin"  # Replace with your file path
 data = load_binary_data(file_path)
 """
 
-"""
-"""
 command_type = 0x02
-param_str = "/test.bin\0"
+param_str = "/test3.bin\0"
 parameter = bytearray(param_str, 'utf-8')
 data = bytearray()
 
+"""
+command_type = 0x03
+param_str = "/test.binxV����?p\0"
+parameter = bytearray(param_str, 'utf-8')
+data = bytearray()
+"""
+
+"""
+command_type = 0x04
+param_str = "/"
+parameter = bytearray()
+data = bytearray()
+"""
 
 param_len = len(parameter)
 data_len = len(data)
