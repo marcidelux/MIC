@@ -53,28 +53,18 @@ uint8_t FsHandler::ReadData(const char *path)
 String FsHandler::ReadDirectory(const char *dir)
 {
     String directoryContents;
-    directoryContents += "Listing directory: " + String(dir) + "\n";
+    directoryContents += "Listing directory:\n";
 
-    File root = SPIFFS.open(dir);
-    if (!root) {
-        directoryContents += "Failed to open directory\n";
-        return directoryContents;
-    }
-    if (!root.isDirectory()) {
-        directoryContents += "Not a directory\n";
-        return directoryContents;
-    }
-
+    SPIFFS.mkdir("/kacsa/nokedli/");
+    File root = SPIFFS.open("/");
     File file = root.openNextFile();
     while(file){
-        if(file.isDirectory()){
-            directoryContents += "  DIR : " + String(file.name()) + "\n";
-            ReadDirectory(file.name());
-        } else {
-            directoryContents += "  FILE: " + String(file.name()) + "\tSIZE: " + String(file.size()) + "\n";
-        }
+        directoryContents += "FILE: ";
+        directoryContents += file.name();
+        directoryContents += "\n";
         file = root.openNextFile();
     }
+
     return directoryContents;
 }
 
