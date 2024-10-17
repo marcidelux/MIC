@@ -36,12 +36,12 @@ void Controller::stepNormalAnimation(bool direction)
 
     if (direction) {
         if(curNormalAnim_ == ANIM_7_EDGE_RECTS) {
-            curNormalAnim_ = ANIM_0_NONE;
+            curNormalAnim_ = ANIM_1_SPEC_ANAL;
         } else {
             curNormalAnim_ ++;
         }
     } else {
-        if(curNormalAnim_ == ANIM_0_NONE) {
+        if(curNormalAnim_ == ANIM_1_SPEC_ANAL) {
             curNormalAnim_ = ANIM_7_EDGE_RECTS;
         } else {
             curNormalAnim_--;
@@ -55,14 +55,14 @@ void Controller::stepStaticAnimation(bool direction)
     cntr_ = 0;
     
     if (direction) {
-        if(curStaticAnim_ == ANIM_STATIC_LAST) {
+        if(curStaticAnim_ == ANIM_STATIC_2_CIRCLE) {
             curStaticAnim_ = ANIM_STATIC_1_EXPANDIN_RAINBOW;
         } else {
             curStaticAnim_++;
         }
     } else {
         if(curStaticAnim_ == ANIM_STATIC_1_EXPANDIN_RAINBOW) {
-            curStaticAnim_ = ANIM_STATIC_LAST;
+            curStaticAnim_ = ANIM_STATIC_2_CIRCLE;
         } else {
             curStaticAnim_--;
         }
@@ -87,6 +87,9 @@ void Controller::CalcAndShow()
                 stepStaticAnimation(false);
             }
 
+            Serial.printf("Button state: %d %d %d %d\n", btHandler.buttons[BUTTON_RED], btHandler.buttons[BUTTON_YELLOW], btHandler.buttons[BUTTON_BLUE], btHandler.buttons[BUTTON_GREEN]);
+            Serial.printf("Current normal anim: %d\n", curNormalAnim_);
+
             if (btHandler.potmeterChange[POTMETER_RED])
             {
                 float brightness = (btHandler.potmeters[POTMETER_RED] / 255.0f) * BIRGHTNESS_DIFF + BRIGHTNESS_MIN;
@@ -94,6 +97,7 @@ void Controller::CalcAndShow()
                 {
                     panels_[i]->SetBrightness(brightness);
                 }
+                Serial.printf("Brightness: %f\n", brightness);
             }
 
             if (btHandler.potmeterChange[POTMETER_BLUE])
@@ -104,6 +108,7 @@ void Controller::CalcAndShow()
                 {
                     msgeq7Handler.SetSensitivity(sensitivity);
                 }
+                Serial.printf("Sensitivity: %f\n", sensitivity);
             }
         }
     }
@@ -116,8 +121,6 @@ void Controller::CalcAndShow()
         if(isNormalAnimation) {
             switch (curNormalAnim_)
             {
-                case ANIM_0_NONE:
-                    break;
                 case ANIM_1_SPEC_ANAL:
                     animSpectrumAnalyzer();
                     break;
